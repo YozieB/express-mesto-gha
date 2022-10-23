@@ -26,10 +26,7 @@ const createUser = async (req, res) => {
   try {
     const { name, about, avatar } = req.body;
     const user = await userModel.create({ name, about, avatar });
-    res.status(SUCCESS_CREATED_CODE).json({
-      message: 'Пользователь создан',
-      user,
-    });
+    res.status(SUCCESS_CREATED_CODE).json({ user });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(INCORRECT_DATA_ERROR_CODE).json({
