@@ -16,7 +16,7 @@ const getUsers = async (req, res) => {
     }
     res.json(users);
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
+    res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось получить пользователей',
     });
   }
@@ -66,12 +66,10 @@ const updateUser = async (req, res) => {
       },
       {
         new: true,
+        runValidators: true,
       },
     );
-    res.status(SUCCESS_CREATED_CODE).json({
-      message: 'Данные пользователя успешно обновлены',
-      user,
-    });
+    res.json({ user });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(INCORRECT_DATA_ERROR_CODE).json({
@@ -92,9 +90,9 @@ const updateUserAvatar = async (req, res) => {
       {
         avatar,
       },
-      { new: true },
+      { new: true, runValidators: true },
     );
-    res.status(SUCCESS_CREATED_CODE).json({
+    res.json({
       message: 'Аватар успешно обновлен',
       user,
     });

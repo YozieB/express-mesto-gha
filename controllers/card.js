@@ -26,10 +26,7 @@ const createCard = async (req, res) => {
   try {
     const { name, link } = req.body;
     const card = await cardModel.create({ name, link, owner: req.user._id });
-    res.status(SUCCESS_CREATED_CODE).json({
-      message: 'Карточка создана',
-      card,
-    });
+    res.status(SUCCESS_CREATED_CODE).json({ card });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(INCORRECT_DATA_ERROR_CODE).json({
@@ -76,12 +73,12 @@ const likeCard = async (req, res) => {
         message: 'Карточка с таким id не найдена',
       });
     }
-    res.json({
+    res.status(SUCCESS_CREATED_CODE).json({
       message: 'success',
       card,
     });
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
+    res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось поставить лайк',
     });
   }
@@ -103,12 +100,12 @@ const dislikeCard = async (req, res) => {
         message: 'Карточка с таким id не найдена',
       });
     }
-    res.json({
+    res.status(SUCCESS_CREATED_CODE).json({
       message: 'success',
       card,
     });
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
+    res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось снять лайк',
     });
   }
