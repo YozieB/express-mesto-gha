@@ -49,7 +49,7 @@ const getUser = async (req, res) => {
     }
     res.json(user);
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
+    res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось найти пользователя',
     });
   }
@@ -92,10 +92,7 @@ const updateUserAvatar = async (req, res) => {
       },
       { new: true, runValidators: true },
     );
-    res.json({
-      message: 'Аватар успешно обновлен',
-      user,
-    });
+    res.json({ user });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(INCORRECT_DATA_ERROR_CODE).json({

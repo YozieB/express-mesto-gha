@@ -51,7 +51,7 @@ const deleteCard = async (req, res) => {
       message: 'Карточка удалена',
     });
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
+    res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось удалить карточку',
     });
   }
@@ -100,7 +100,7 @@ const dislikeCard = async (req, res) => {
         message: 'Карточка с таким id не найдена',
       });
     }
-    res.status(SUCCESS_CREATED_CODE).json({
+    res.json({
       message: 'success',
       card,
     });
