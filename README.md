@@ -1,4 +1,4 @@
-[![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/YozieB/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/YozieB/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
+[![Tests](https://github.com/yozieb/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yozieb/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/YozieB/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/YozieB/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
 ## Директории
