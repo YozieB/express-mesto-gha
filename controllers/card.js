@@ -44,13 +44,12 @@ const createCard = async (req, res) => {
 
 const deleteCard = async (req, res) => {
   try {
-    const card = await cardModel.findById(req.params.cardId);
-    if (!card) {
+    const cardToRemove = await cardModel.findByIdAndRemove(req.params.cardId);
+    if (!cardToRemove) {
       return res.status(NOT_FOUND_ERROR_CODE).json({
         message: 'Карточка с таким id не найдена',
       });
     }
-    const cardToRemove = await cardModel.findByIdAndRemove(req.params.cardId);
     res.json({
       message: 'Карточка удалена',
     });

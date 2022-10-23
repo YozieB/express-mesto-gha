@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cardRoutes = require('./routes/card');
 const userRoutes = require('./routes/user');
 const { NOT_FOUND_ERROR_CODE } = require('./utils/constants');
+
 const app = express();
 app.use(express.json());
 app.use((req, res, next) => {
