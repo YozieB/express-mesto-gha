@@ -9,13 +9,10 @@ const {
 const getCards = async (req, res) => {
   try {
     const cards = await cardModel.find();
-    if (cards.length === 0) {
-      return res.status(NOT_FOUND_ERROR_CODE).json();
-    }
     res.json(cards);
   } catch (error) {
     res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось получить пользователей',
+      message: 'Не удалось получить карточки',
     });
   }
 };
