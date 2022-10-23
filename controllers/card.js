@@ -10,9 +10,7 @@ const getCards = async (req, res) => {
   try {
     const cards = await cardModel.find();
     if (cards.length === 0) {
-      return res.status(NOT_FOUND_ERROR_CODE).json({
-        message: 'Карточки не найдены',
-      });
+      return res.status(NOT_FOUND_ERROR_CODE).json();
     }
     res.json(cards);
   } catch (error) {
