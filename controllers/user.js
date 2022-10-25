@@ -9,11 +9,6 @@ const {
 const getUsers = async (req, res) => {
   try {
     const users = await userModel.find();
-    if (users.length === 0) {
-      return res.status(NOT_FOUND_ERROR_CODE).json({
-        message: 'Пользователи не найдены',
-      });
-    }
     res.json(users);
   } catch (error) {
     res.status(INCORRECT_DATA_ERROR_CODE).json({
@@ -49,6 +44,11 @@ const getUser = async (req, res) => {
     }
     res.json(user);
   } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(INCORRECT_DATA_ERROR_CODE).json({
+        message: 'Переданы некорректные данные',
+      });
+    }
     res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось найти пользователя',
     });

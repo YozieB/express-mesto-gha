@@ -46,6 +46,11 @@ const deleteCard = async (req, res) => {
       message: 'Карточка удалена',
     });
   } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(INCORRECT_DATA_ERROR_CODE).json({
+        message: 'Переданы некорректные данные',
+      });
+    }
     res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось удалить карточку',
     });
@@ -73,6 +78,11 @@ const likeCard = async (req, res) => {
       card,
     });
   } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(INCORRECT_DATA_ERROR_CODE).json({
+        message: 'Переданы некорректные данные',
+      });
+    }
     res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось поставить лайк',
     });
@@ -100,6 +110,11 @@ const dislikeCard = async (req, res) => {
       card,
     });
   } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(INCORRECT_DATA_ERROR_CODE).json({
+        message: 'Переданы некорректные данные',
+      });
+    }
     res.status(INCORRECT_DATA_ERROR_CODE).json({
       message: 'Не удалось снять лайк',
     });
