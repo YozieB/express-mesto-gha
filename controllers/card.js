@@ -51,8 +51,8 @@ const deleteCard = async (req, res) => {
         message: 'Переданы некорректные данные',
       });
     }
-    res.status(INCORRECT_DATA_ERROR_CODE).json({
-      message: 'Не удалось удалить карточку',
+    res.status(DEFAULT_ERROR_CODE).json({
+      message: 'Произошла ошибка на сервере',
     });
   }
 };
@@ -83,8 +83,8 @@ const likeCard = async (req, res) => {
         message: 'Переданы некорректные данные',
       });
     }
-    res.status(INCORRECT_DATA_ERROR_CODE).json({
-      message: 'Не удалось поставить лайк',
+    res.status(DEFAULT_ERROR_CODE).json({
+      message: 'Произошла ошибка на сервере',
     });
   }
 };
@@ -115,8 +115,8 @@ const dislikeCard = async (req, res) => {
         message: 'Переданы некорректные данные',
       });
     }
-    res.status(INCORRECT_DATA_ERROR_CODE).json({
-      message: 'Не удалось снять лайк',
+    res.status(DEFAULT_ERROR_CODE).json({
+      message: 'Произошла ошибка на сервере',
     });
   }
 };

@@ -11,8 +11,8 @@ const getUsers = async (req, res) => {
     const users = await userModel.find();
     res.json(users);
   } catch (error) {
-    res.status(INCORRECT_DATA_ERROR_CODE).json({
-      message: 'Не удалось получить пользователей',
+    res.status(DEFAULT_ERROR_CODE).json({
+      message: 'Произошла ошибка на сервере',
     });
   }
 };
@@ -49,8 +49,8 @@ const getUser = async (req, res) => {
         message: 'Переданы некорректные данные',
       });
     }
-    res.status(INCORRECT_DATA_ERROR_CODE).json({
-      message: 'Не удалось найти пользователя',
+    res.status(DEFAULT_ERROR_CODE).json({
+      message: 'Произошла ошибка на сервере',
     });
   }
 };
