@@ -21,8 +21,7 @@ const createUser = async (req, res, next) => {
     const {
       name, about, avatar, email, password,
     } = req.body;
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    const hash = await bcrypt.hash(password, 10);
     const user = await userModel.create({
       name,
       about,
@@ -30,7 +29,7 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.status(SUCCESS_CREATED_CODE).json({ message: 'Пользователь создан' });
+    res.json({ message: 'Пользователь создан' });
   } catch (error) {
     if (error.code === 11000) {
       next(new ConflictError('Пользователь с таким email уже существует'));
