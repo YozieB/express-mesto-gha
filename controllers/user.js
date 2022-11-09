@@ -30,7 +30,7 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.status(SUCCESS_CREATED_CODE).json({ user });
+    res.status(SUCCESS_CREATED_CODE).json({ message: 'Пользователь создан' });
   } catch (error) {
     if (error.code === 11000) {
       next(new ConflictError('Пользователь с таким email уже существует'));
