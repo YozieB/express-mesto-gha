@@ -3,6 +3,7 @@ const NOT_FOUND_ERROR_CODE = 404;
 const DEFAULT_ERROR_CODE = 500;
 const UNAUTHORIZED_ERROR_CODE = 401;
 const SUCCESS_CREATED_CODE = 201;
+const LINK_REG_EXP_PATTERN = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
 
 module.exports = {
   INCORRECT_DATA_ERROR_CODE,
@@ -10,4 +11,5 @@ module.exports = {
   DEFAULT_ERROR_CODE,
   SUCCESS_CREATED_CODE,
   UNAUTHORIZED_ERROR_CODE,
+  LINK_REG_EXP_PATTERN,
 };

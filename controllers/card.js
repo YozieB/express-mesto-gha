@@ -1,63 +1,53 @@
 const cardModel = require('../models/card');
-const {
-  NOT_FOUND_ERROR_CODE,
-  DEFAULT_ERROR_CODE,
-  INCORRECT_DATA_ERROR_CODE,
-  SUCCESS_CREATED_CODE,
-} = require('../utils/constants');
+const { SUCCESS_CREATED_CODE } = require('../utils/constants');
+const BadRequestError = require('../utils/errors/badRequestError');
+const NotFoundError = require('../utils/errors/notFoundError');
+const ForbiddenError = require('../utils/errors/forbiddenError');
 
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await cardModel.find();
     res.json(cards);
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось получить карточки',
-    });
+    next(error);
   }
 };
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
     const card = await cardModel.create({ name, link, owner: req.user._id });
     res.status(SUCCESS_CREATED_CODE).json({ card });
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданые некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось создать карточку',
-    });
+    next(error);
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   try {
-    const cardToRemove = await cardModel.findByIdAndRemove(req.params.cardId);
+    const cardToRemove = await cardModel.findById(req.params.cardId);
     if (!cardToRemove) {
-      return res.status(NOT_FOUND_ERROR_CODE).json({
-        message: 'Карточка с таким id не найдена',
-      });
+      throw new NotFoundError('Карточка с таким id не найдена');
     }
+    if (cardToRemove.owner.toString() !== req.user._id) {
+      throw new ForbiddenError('Нельзя удалять чужие карточки');
+    }
+    const removableCard = await cardModel.findByIdAndRemove(req.params.cardId);
     res.json({
       message: 'Карточка удалена',
     });
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Произошла ошибка на сервере',
-    });
+    next(error);
   }
 };
 
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   try {
     const card = await cardModel.findByIdAndUpdate(
       req.params.cardId,
@@ -69,9 +59,7 @@ const likeCard = async (req, res) => {
       },
     );
     if (!card) {
-      return res.status(NOT_FOUND_ERROR_CODE).json({
-        message: 'Карточка с таким id не найдена',
-      });
+      throw new NotFoundError('Карточка с таким id не найдена');
     }
     res.status(SUCCESS_CREATED_CODE).json({
       message: 'success',
@@ -79,17 +67,13 @@ const likeCard = async (req, res) => {
     });
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Произошла ошибка на сервере',
-    });
+    next(error);
   }
 };
 
-const dislikeCard = async (req, res) => {
+const dislikeCard = async (req, res, next) => {
   try {
     const card = await cardModel.findByIdAndUpdate(
       req.params.cardId,
@@ -101,9 +85,7 @@ const dislikeCard = async (req, res) => {
       },
     );
     if (!card) {
-      return res.status(NOT_FOUND_ERROR_CODE).json({
-        message: 'Карточка с таким id не найдена',
-      });
+      throw new NotFoundError('Карточка с таким id не найдена');
     }
     res.json({
       message: 'success',
@@ -111,13 +93,9 @@ const dislikeCard = async (req, res) => {
     });
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Произошла ошибка на сервере',
-    });
+    next(error);
   }
 };
 

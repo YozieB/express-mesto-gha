@@ -1,23 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const cardRoutes = require('./routes/card');
 const userRoutes = require('./routes/user');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/user');
-const { NOT_FOUND_ERROR_CODE } = require('./utils/constants');
+const errorHandler = require('./middlewares/error');
+const NotFoundError = require('./utils/errors/notFoundError');
+const { validateLogin, validateRegister } = require('./utils/validations/userValidation');
 
 const app = express();
 app.use(express.json());
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validateLogin, login);
+app.post('/signup', validateRegister, createUser);
 app.use(auth);
 app.use('/cards', cardRoutes);
 app.use('/users', userRoutes);
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND_ERROR_CODE).json({
-    message: 'Адреса не существует',
-  });
+app.use('*', () => {
+  throw new NotFoundError('Адреса не существует');
 });
+app.use(errors());
+app.use(errorHandler);
 mongoose
   .connect('mongodb://localhost:27017/mestodb')
   .then(() => console.log('DB OK'))

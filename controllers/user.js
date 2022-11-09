@@ -1,28 +1,26 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const userModel = require('../models/user');
-const {
-  NOT_FOUND_ERROR_CODE,
-  DEFAULT_ERROR_CODE,
-  INCORRECT_DATA_ERROR_CODE,
-  SUCCESS_CREATED_CODE,
-  UNAUTHORIZED_ERROR_CODE,
-} = require('../utils/constants');
+const { SUCCESS_CREATED_CODE } = require('../utils/constants');
+const BadRequestError = require('../utils/errors/badRequestError');
+const NotFoundError = require('../utils/errors/notFoundError');
+const ConflictError = require('../utils/errors/conflictError');
+const UnauthorizedError = require('../utils/errors/unathorizedError');
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await userModel.find();
     res.json(users);
   } catch (error) {
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Произошла ошибка на сервере',
-    });
+    next(error);
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
-    const { name, about, avatar, email, password } = req.body;
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     const user = await userModel.create({
@@ -34,39 +32,32 @@ const createUser = async (req, res) => {
     });
     res.status(SUCCESS_CREATED_CODE).json({ user });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+    if (error.code === 11000) {
+      next(new ConflictError('Пользователь с таким email уже существует'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось создать пользователя',
-    });
+    if (error.name === 'ValidationError') {
+      next(new BadRequestError('Переданы некорректные данные'));
+    }
+    next(error);
   }
 };
 
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   try {
     const user = await userModel.findById(req.params.id);
     if (!user) {
-      return res.status(NOT_FOUND_ERROR_CODE).json({
-        message: 'Пользователь с таким id не найден',
-      });
+      throw new NotFoundError('Пользователь с таким id не найден');
     }
     res.json(user);
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Произошла ошибка на сервере',
-    });
+    next(error);
   }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   try {
     const { name, about } = req.body;
     const user = await userModel.findByIdAndUpdate(
@@ -83,17 +74,13 @@ const updateUser = async (req, res) => {
     res.json({ user });
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось обновить данные пользователя',
-    });
+    next(error);
   }
 };
 
-const updateUserAvatar = async (req, res) => {
+const updateUserAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const user = await userModel.findByIdAndUpdate(
@@ -106,16 +93,12 @@ const updateUserAvatar = async (req, res) => {
     res.json({ user });
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось обновить данные пользователя',
-    });
+    next(error);
   }
 };
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await userModel.findUserByCredentials(email, password);
@@ -126,24 +109,18 @@ const login = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(UNAUTHORIZED_ERROR_CODE).json({
-      message: 'Неправильные почта или пароль',
-    });
+    next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 };
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
   try {
     const user = await userModel.findOne({ _id: req.user._id });
     res.json(user);
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(INCORRECT_DATA_ERROR_CODE).json({
-        message: 'Переданы некорректные данные',
-      });
+      next(new BadRequestError('Переданы некорректные данные'));
     }
-    return res.status(DEFAULT_ERROR_CODE).json({
-      message: 'Не удалось получить данные пользователя',
-    });
+    next(error);
   }
 };
 module.exports = {
