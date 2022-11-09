@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { NOT_FOUND_ERROR_CODE } = require('../utils/constants');
+const ForbiddenError = require('../utils/errors/forbiddenError');
 
 module.exports = (req, res, next) => {
   let payload;
@@ -7,15 +7,11 @@ module.exports = (req, res, next) => {
     const { authorization } = req.headers;
     const token = authorization.split(' ')[1];
     if (!token) {
-      return res
-        .status(NOT_FOUND_ERROR_CODE)
-        .json({ message: 'Необходима авторизация' });
+      return next(new ForbiddenError('Необходима авторизация'));
     }
     payload = jwt.verify(token, 'secret-key');
   } catch (e) {
-    return res
-      .status(NOT_FOUND_ERROR_CODE)
-      .json({ message: 'Необходима авторизация' });
+    return next(new ForbiddenError('Необходима авторизация'));
   }
   req.user = payload;
   next();
