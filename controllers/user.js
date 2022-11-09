@@ -29,11 +29,11 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.json({ message: 'Пользователь создан' });
+    res.json(user);
   } catch (error) {
     if (error.code === 11000) {
       next(new ConflictError('Пользователь с таким email уже существует'));
-    } else if (error.name === 'CastError') {
+    } else if (error.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
     } else {
       next(error);
