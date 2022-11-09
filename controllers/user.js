@@ -29,7 +29,9 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.json(user);
+    res.json({
+      name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+    });
   } catch (error) {
     if (error.code === 11000) {
       next(new ConflictError('Пользователь с таким email уже существует'));
