@@ -34,11 +34,11 @@ const createUser = async (req, res, next) => {
   } catch (error) {
     if (error.code === 11000) {
       next(new ConflictError('Пользователь с таким email уже существует'));
-    }
-    if (error.name === 'ValidationError') {
+    } else if (error.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
+    } else {
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -52,8 +52,9 @@ const getUser = async (req, res, next) => {
   } catch (error) {
     if (error.name === 'CastError') {
       next(new BadRequestError('Переданы некорректные данные'));
+    } else {
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -75,8 +76,9 @@ const updateUser = async (req, res, next) => {
   } catch (error) {
     if (error.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
+    } else {
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -94,8 +96,9 @@ const updateUserAvatar = async (req, res, next) => {
   } catch (error) {
     if (error.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
+    } else {
+      next(error);
     }
-    next(error);
   }
 };
 const login = async (req, res, next) => {
@@ -119,8 +122,9 @@ const getMe = async (req, res, next) => {
   } catch (error) {
     if (error.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
+    } else {
+      next(error);
     }
-    next(error);
   }
 };
 module.exports = {
