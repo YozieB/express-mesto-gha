@@ -3,9 +3,11 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/error');
 const router = require('./routes');
+const cors = require('./middlewares/cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors);
 app.use(router);
 app.use(errors());
 app.use(errorHandler);
