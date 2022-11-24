@@ -105,8 +105,9 @@ const updateUserAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const { NODE_ENV, JWT_SECRET } = process.env;
     const user = await userModel.findUserByCredentials(email, password);
-    const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
+    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key', {
       expiresIn: '7d',
     });
     res.json({
